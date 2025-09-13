@@ -1,9 +1,7 @@
-# tests/conftest.py
 import uuid
 import requests
 import pytest
-
-BASE = "https://stellarburgers.nomoreparties.site/api"
+from url.url import BASE
 
 
 def _rand():
@@ -13,13 +11,10 @@ def _rand():
 @pytest.fixture
 def ingredients_list():
     r = requests.get(f"{BASE}/ingredients")
-    assert r.status_code == 200, "Не удалось получить ingredients"
     body = r.json()
     items = body.get("data") or body.get("ingredients") or []
     ids = [it["_id"] for it in items]
-    assert ids, "Список ингредиентов пуст"
     return ids
-
 
 @pytest.fixture
 def new_user():
@@ -33,7 +28,6 @@ def new_user():
 
     payload = {"email": email, "password": password, "name": name}
     r = requests.post(f"{BASE}/auth/register", json=payload)
-    assert 200 <= r.status_code < 300, f"Регистрация не удалась: {r.status_code}"
     js = r.json()
     # accessToken в ответе приходит как "Bearer <token>"
     access = js.get("accessToken") or js.get("access")

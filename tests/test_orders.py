@@ -1,9 +1,6 @@
 import requests
 import allure
-import pytest
-
-BASE = "https://stellarburgers.nomoreparties.site/api"
-
+from url.url import BASE
 
 @allure.epic("Stellar Burgers")
 @allure.feature("Создание заказа")

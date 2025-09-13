@@ -1,12 +1,10 @@
-# tests/test_register.py
 import requests
 import allure
 import uuid
 from faker import Faker
+from url.url import BASE
 
 fake = Faker()
-BASE_URL = "https://stellarburgers.nomoreparties.site/api"
-
 
 @allure.epic("Stellar Burgers")
 @allure.feature("Регистрация")
@@ -14,15 +12,11 @@ class TestUserRegistration:
 
     @allure.story("Регистрация нового пользователя")
     @allure.title("Создание уникального пользователя")
-    def test_create_unique_user(self):
-        unique_email = f"{uuid.uuid4().hex[:8]}_{fake.email()}"
-        payload = {
-            "email": unique_email,
-            "password": "Password12345",
-            "name": "TestUser"
-        }
+    def test_create_unique_user(self, user_data):
+
+        payload = user_data["payload"]
         with allure.step("Отправляем POST /auth/register с уникальными данными"):
-            response = requests.post(f"{BASE_URL}/auth/register", json=payload)
+            response = requests.post(f"{BASE}/auth/register", json=payload)
             allure.attach(response.text, "response", allure.attachment_type.JSON)
 
         assert response.status_code == 200, f"Ошибка {response.status_code}: {response.text}"
@@ -36,11 +30,11 @@ class TestUserRegistration:
         payload = {"email": email, "password": "Password12345", "name": "DupUser"}
 
         # первый запрос создаёт пользователя
-        requests.post(f"{BASE_URL}/auth/register", json=payload)
+        requests.post(f"{BASE}/auth/register", json=payload)
 
         # второй должен вернуть ошибку
         with allure.step("Отправляем POST /auth/register с теми же данными"):
-            response = requests.post(f"{BASE_URL}/auth/register", json=payload)
+            response = requests.post(f"{BASE}/auth/register", json=payload)
             allure.attach(response.text, "response", allure.attachment_type.JSON)
 
         assert response.status_code == 403
@@ -57,7 +51,7 @@ class TestUserRegistration:
             "name": "NoEmailUser"
         }
         with allure.step("Отправляем POST /auth/register без email"):
-            response = requests.post(f"{BASE_URL}/auth/register", json=payload)
+            response = requests.post(f"{BASE}/auth/register", json=payload)
             allure.attach(response.text, "response", allure.attachment_type.JSON)
 
         assert response.status_code == 403

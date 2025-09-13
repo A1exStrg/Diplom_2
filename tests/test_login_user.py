@@ -1,9 +1,6 @@
-# tests/test_auth.py
 import requests
 import allure
-
-BASE = "https://stellarburgers.nomoreparties.site/api"
-
+from url.url import BASE
 
 @allure.epic("Stellar Burgers")
 @allure.feature("Авторизация")
@@ -34,3 +31,4 @@ class TestAuth:
             assert r.status_code == 401
             js = r.json()
             assert js.get("success") is False
+            assert js.get("message") == "email or password are incorrect"

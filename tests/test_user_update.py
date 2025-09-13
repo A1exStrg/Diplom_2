@@ -1,9 +1,7 @@
-# tests/test_user_update.py
 import uuid
 import requests
 import allure
-
-BASE = "https://stellarburgers.nomoreparties.site/api"
+from url.url import BASE
 
 
 @allure.epic("Stellar Burgers")

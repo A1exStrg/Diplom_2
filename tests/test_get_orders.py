@@ -1,9 +1,6 @@
-# tests/test_get_orders.py
 import requests
 import allure
-
-BASE = "https://stellarburgers.nomoreparties.site/api"
-
+from url.url import BASE
 
 @allure.epic("Stellar Burgers")
 @allure.feature("Получение заказов")
@@ -29,7 +26,8 @@ class TestGetOrders:
         with allure.step("Отправляем GET-запрос /orders без авторизации"):
             r = requests.get(f"{BASE}/orders")
             allure.attach(r.text, "Ответ сервера", allure.attachment_type.JSON)
-        with allure.step("Проверяем, что сервер вернул ошибку 401"):
+        with allure.step("Проверяем, что сервер вернул ошибку 401 и текст ошибки"):
             assert r.status_code == 401
             js = r.json()
             assert js.get("success") is False
+            assert js.get("message") == "You should be authorised"
