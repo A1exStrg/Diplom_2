@@ -1,12 +1,7 @@
-import uuid
 import requests
 import pytest
 from url.url import BASE
-
-
-def _rand():
-    return uuid.uuid4().hex[:8]
-
+from helpers import _rand
 
 @pytest.fixture
 def ingredients_list():
@@ -27,8 +22,10 @@ def new_user():
     name = f"Student_{_rand()}"
 
     payload = {"email": email, "password": password, "name": name}
+
     r = requests.post(f"{BASE}/auth/register", json=payload)
     js = r.json()
+
     # accessToken в ответе приходит как "Bearer <token>"
     access = js.get("accessToken") or js.get("access")
     refresh = js.get("refreshToken") or js.get("refresh")

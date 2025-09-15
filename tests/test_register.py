@@ -12,15 +12,13 @@ class TestUserRegistration:
 
     @allure.story("Регистрация нового пользователя")
     @allure.title("Создание уникального пользователя")
-    def test_create_unique_user(self, user_data):
+    def test_create_unique_user(self, new_user):
+        response = new_user["response"]
+        js = new_user["json"]
 
-        payload = user_data["payload"]
-        with allure.step("Отправляем POST /auth/register с уникальными данными"):
-            response = requests.post(f"{BASE}/auth/register", json=payload)
-            allure.attach(response.text, "response", allure.attachment_type.JSON)
+        allure.attach(response.text, "response", allure.attachment_type.JSON)
 
         assert response.status_code == 200, f"Ошибка {response.status_code}: {response.text}"
-        js = response.json()
         assert js.get("success") is True
 
     @allure.story("Регистрация существующего пользователя")
@@ -46,7 +44,6 @@ class TestUserRegistration:
     @allure.title("Создание пользователя без обязательного поля → 403")
     def test_create_user_without_required_field(self):
         payload = {
-            # email специально не указываем
             "password": "Password12345",
             "name": "NoEmailUser"
         }
